@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collection Building</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #000;
+    --fg: #fff;
+    --dim: #7a7a7a;
+    --line: #2a2a2a;
+    --ph: #111;
+    --sans: "Host Grotesk", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono: var(--sans);
+    --pad: 40px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; cursor: default; }
+
+  /* ---------- 1920x1080 stage, scaled to fit ---------- */
+  #stage {
+    position: absolute; left: 50%; top: 50%;
+    width: 1920px; height: 1080px;
+    transform-origin: 0 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .slide { position: absolute; inset: 0; display: none; padding: var(--pad); }
+  .slide.active { display: block; }
+
+  /* ---------- persistent chrome (futurneue-style) ---------- */
+  .chrome-vert {
+    position: absolute; right: 18px; bottom: var(--pad);
+    writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 15px; letter-spacing: .02em; z-index: 5;
+  }
+
+  /* ---------- type ---------- */
+  .display { font-size: 200px; line-height: .9; letter-spacing: -.035em; font-weight: 500; }
+  .h1 { font-size: 96px; line-height: 1.02; letter-spacing: -.025em; font-weight: 400; }
+  .h2 { font-size: 56px; line-height: 1.05; letter-spacing: -.02em; font-weight: 400; }
+  .body { font-size: 24px; line-height: 1.3; max-width: 1500px; }
+  .small { font-size: 17px; line-height: 1.35; }
+  .mono { font-family: var(--mono); font-size: 14px; letter-spacing: .02em; }
+  .dim { color: var(--dim); }
+  .caret::after { content: ""; display: inline-block; width: .07em; height: .78em; background: currentColor; margin-left: .06em; vertical-align: -.04em; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* ---------- index table (Project / Client / Type, year) ---------- */
+  .rows { width: 100%; border-collapse: collapse; }
+  .rows td { padding: 14px 0; border-top: 1px solid var(--line); vertical-align: baseline; font-size: 24px; }
+  .rows tr:last-child td { border-bottom: 1px solid var(--line); }
+  .rows td.k { width: 220px; color: var(--dim); font-size: 18px; font-variant-numeric: tabular-nums; }
+  .rows tr.link { cursor: pointer; }
+  .rows tr.link:hover td { color: var(--bg); background: var(--fg); }
+  .rows tr.link:hover td.k { color: var(--bg); }
+
+  /* ---------- image placeholder ---------- */
+  .ph {
+    background: var(--ph); position: relative; overflow: hidden;
+    display: flex; align-items: flex-end; padding: 14px;
+  }
+  .ph::before, .ph::after {
+    content: ""; position: absolute; left: 50%; top: 50%; background: #262626;
+  }
+  .ph::before { width: 28px; height: 1px; transform: translate(-50%, -50%); }
+  .ph::after  { width: 1px; height: 28px; transform: translate(-50%, -50%); }
+  .ph span { font-size: 15px; color: #555; }
+
+  /* ---------- layouts ---------- */
+  .abs { position: absolute; }
+  .bottom-text { position: absolute; left: var(--pad); right: 120px; bottom: 60px; }
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .meta3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 12px; }
+
+
+  /* home date list */
+  #home .rows td { font-size: 34px; padding: 8px 0; }
+  #home .rows td.st { text-align: right; font-size: 18px; color: var(--dim); }
+  #home .rows tr.link:hover td.st { color: var(--bg); }
+
+</style>
+</head>
+<body>
+
+<div id="stage"></div>
+
+<script>
+/* =========================================================
+   CONTENT — 매주 여기만 채우면 됨.
+   비어 있는 값은 placeholder 텍스트로 자동 표시됩니다.
+   이미지: img: "images/1007/work-01.jpg" 처럼 경로 넣기
+   ========================================================= */
+const WEEKS = [
+  { date: "10.07.26", title: "Brand ≠ Logo", slides: [
+    { type: "video", id: "sO4te2QNsHY", title: "What is Branding? 4 Minute Crash Course." },
+    { type: "statement", label: "Marty Neumeier — What is a brand?",
+      en: "A brand is not a logo. It’s a person’s gut feeling about a product, service, or company.",
+      ko: "브랜드는 로고가 아니라, 사람들이 그것에 대해 갖는 직감이다.",
+      by: "— Marty Neumeier, The Brand Gap" },
+    { type: "seq", dir: "images/1007/cdj", count: 52, interval: 700 },  // cdj.kr 프로젝트 스크린샷
+    { type: "text", title: "Recent Interest",
+      rows: [
+        { k: "Shift",      v: "AI가 세상을 바꿨고, 그 안에서 인간의 역할도 바뀌었다." },
+        { k: "Delegation", v: "판단, 감정, 도덕적 결정까지 — 우리는 점점 더 많은 것을 AI에게 맡긴다." },
+        { k: "Faith",      v: "근거를 묻지 않고 결과를 따르는 순간, AI는 도구가 아니라 새로운 신앙이 된다." },
+      ] },
+    { type: "embed", url: "https://soxmfhvl123.github.io/dataism/", title: "DATAISM",
+      text: [
+        "AI를 맹목적으로 믿는 지금의 풍경을 십자가 형태의 LED 패널로 옮긴 작업.",
+        "성상이 있던 자리에 쉼 없이 흐르는 데이터를 올려, 우리가 지금 무엇을 믿고 있는지 되묻는다.",
+      ],
+      meta: [["Project", "DATAISM"]] },
+    { type: "image", src: "images/1007/dataism-render.webp" },
+    /* 숨김 — 영상 준비되면 이 주석만 풀기
+    { type: "work", title: "Fake Empathy", src: "videos/1007/fake-empathy.mp4",
+      text: [
+        "카메라가 관람객의 표정과 시선을 읽고, ‘불안 78%’, ‘고독 65%’처럼 감정을 숫자로 되돌려준다.",
+        "AI의 공감은 생체 데이터를 계산한 결과일 뿐, 그 감정을 겪지도 책임지지도 않는다.",
+        "계산된 공감의 차가움 앞에서, 사람과 사람 사이의 진짜 연결이 무엇인지 다시 묻는다.",
+      ],
+      meta: [["Project", "FAKE EMPATHY"]] },
+    */
+    { type: "image", src: "images/1007/fake-church.webp" },
+  ] },
+  { date: "10.14.26" },
+  { date: "10.21.26" },
+  { date: "10.28.26" },
+  { date: "11.04.26" },
+  { date: "11.11.26" },
+  { date: "11.18.26" },
+  { date: "11.25.26" },
+];
+
+/* 슬라이드 타입
+   video     { id: "YouTube ID", title }
+   statement { label, en, ko, by }          — 인용/정의 한 문장
+   text      { title, rows: [{k, v}], foot } — 생각 정리
+   embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
+   work      { title, src: "videos/..mp4", text: [], meta } — 내 작업 영상 (파일 없으면 placeholder)
+   seq       { dir, count, interval }        — dir/01.jpg … 순서대로 자동 전환 (ms)
+   clip      { src }                         — 영상 파일 한 개, 화면 꽉 차게 (무음 자동재생)
+   image     { src }                         — 이미지 한 장, 화면 꽉 차게 (비율 유지) */
+const DEFAULT = { title: "Title Placeholder", slides: [] };
+
+/* ========================================================= */
+
+const $stage = document.getElementById("stage");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;" }[c]));
+const ph = (label, img, style = "") =>
+  img ? `<div class="ph" style="${style};background:url('${esc(img)}') center/cover"></div>`
+      : `<div class="ph" style="${style}"><span>${esc(label)}</span></div>`;
+
+function chrome() {
+  return `<div class="chrome-vert">© Collection Building — 2026</div>`;
+}
+
+/* ---------- HOME: title → dates ---------- */
+function renderHome() {
+  const today = new Date();
+  const rows = WEEKS.map((w, idx) => {
+    const [m, d, y] = w.date.split(".").map(Number);
+    const dt = new Date(2000 + y, m - 1, d);
+    const diff = Math.floor((dt - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 864e5);
+    const st = diff === 0 ? "Today" : diff < 0 ? "Past" : diff <= 7 ? "Next" : "Upcoming";
+    return `<tr class="link" data-date="${w.date}">
+      <td>${w.date}</td>
+      <td class="st">${st} · Wed</td></tr>`;
+  }).join("");
+
+  $stage.innerHTML = `
+  <section class="slide active" id="home">
+    <div class="chrome-vert">© Collection Building — 2026</div>
+    <div class="display type" data-text="COLLECTION BUILDING"></div>
+    <div class="abs" style="left:var(--pad);right:120px;top:470px">
+      <table class="rows">${rows}</table>
+    </div>
+  </section>`;
+  $stage.querySelectorAll("tr.link").forEach(tr =>
+    tr.addEventListener("click", () => location.hash = tr.dataset.date));
+  typeIn($stage.querySelector("#home"));
+}
+
+/* ---------- WEEK DECK ---------- */
+function buildWeek(w, idx) {
+  const c = { ...DEFAULT, ...w };
+  const cover = `
+    <div class="display type" data-text="${esc(c.date)}"></div>
+    <div class="display type" data-text="${esc(c.title)}" style="margin-top:10px"></div>`;
+  return [cover, ...c.slides.map(x => RENDER[x.type](x))];
+}
+
+const metaTable = rows => `<table class="rows">${rows.map(([k, v]) =>
+  `<tr><td class="k" style="width:160px">${esc(k)}</td><td>${esc(v)}</td></tr>`).join("")}</table>`;
+
+const RENDER = {
+  video: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="abs" style="left:var(--pad);top:140px;width:1564px;height:880px;background:var(--ph)">
+      ${location.protocol === "file:"
+        ? `<a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank"
+             style="display:block;width:100%;height:100%;background:url('https://img.youtube.com/vi/${esc(v.id)}/maxresdefault.jpg') center/cover;position:relative">
+             <span class="small" style="position:absolute;left:16px;bottom:14px;background:#000;color:#fff;padding:6px 10px">
+               ▶ 유튜브에서 열기 — 장표 안에서 재생하려면 start.command로 여세요</span></a>`
+        : `<iframe data-src="https://www.youtube.com/embed/${esc(v.id)}?rel=0&modestbranding=1&playsinline=1"
+             referrerpolicy="strict-origin-when-cross-origin"
+             style="width:100%;height:100%;border:0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`}
+    </div>`,
+
+  statement: v => `
+    <div class="small dim">${esc(v.label)}</div>
+    <div class="h1 type" data-text="${esc(v.en)}" style="max-width:1650px;margin-top:40px"></div>
+    <div class="h2" style="max-width:1650px;margin-top:56px;color:var(--dim)">${esc(v.ko)}</div>
+    <div class="bottom-text small dim">${esc(v.by)}</div>`,
+
+  text: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="abs" style="left:var(--pad);right:120px;top:240px">
+      <table class="rows">${v.rows.map(r =>
+        `<tr><td class="k" style="width:300px;color:var(--fg);font-size:40px;line-height:1.25">${esc(r.k)}</td><td style="font-size:40px;line-height:1.25">${esc(r.v)}</td></tr>`).join("")}</table>
+    </div>
+    ${v.foot ? `<div class="bottom-text h1" style="bottom:70px">${esc(v.foot)}</div>` : ""}`,
+
+  work: v => `
+    <div class="display type" data-text="${esc(v.title)}" style="font-size:140px"></div>
+    <div class="ph abs" style="left:var(--pad);top:240px;width:1180px;height:664px">
+      <span>VIDEO — export 후 ${esc(v.src)} 에 넣기</span>
+      <video src="${esc(v.src)}" muted loop playsinline preload="auto"
+        onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000"></video>
+    </div>
+    <div class="abs" style="left:1260px;right:120px;top:240px">
+      ${metaTable(v.meta || [])}
+      ${(v.text || []).map(t => `<p class="body" style="margin-top:28px;font-size:30px;line-height:1.35">${esc(t)}</p>`).join("")}
+    </div>`,
+
+  clip: v => `
+    <video src="${esc(v.src)}" muted playsinline preload="auto"
+      style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000"></video>`,
+
+  seq: v => `
+    <div class="seq" data-interval="${v.interval || 1500}" style="position:absolute;inset:0;background:#000">
+      ${Array.from({ length: v.count }, (_, i) =>
+        `<img src="${esc(v.dir)}/${String(i + 1).padStart(2, "0")}.jpg" alt="" loading="eager"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:${i ? 0 : 1}">`).join("")}
+    </div>`,
+
+  image: v => `
+    <img src="${esc(v.src)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000">`,
+
+  embed: v => `
+    <div class="abs" style="left:var(--pad);top:var(--pad);bottom:var(--pad);width:1000px;background:#000">
+      <iframe data-src="${esc(v.url)}" style="width:100%;height:100%;border:0"></iframe>
+    </div>
+    <div class="abs" style="left:1100px;right:120px;top:var(--pad)">
+      <div class="display type" data-text="${esc(v.title)}" style="font-size:140px"></div>
+      <div style="margin-top:48px">${metaTable(v.meta || [])}</div>
+      ${(v.text || []).map(t => `<p class="body" style="margin-top:28px;font-size:30px;line-height:1.35">${esc(t)}</p>`).join("")}
+      <p class="small dim" style="margin-top:40px"><a href="${esc(v.url)}" target="_blank" style="color:inherit">${esc(v.url.replace(/^https?:\/\//, ""))} ↗</a></p>
+    </div>`,
+};
+
+/* ---------- typing effect ---------- */
+let typeTimers = [];
+function typeIn(root) {
+  typeTimers.forEach(clearTimeout); typeTimers = [];
+  const els = [...root.querySelectorAll(".type")];
+  els.forEach(el => { el.textContent = ""; el.classList.remove("caret"); });
+  let t = 0;
+  els.forEach(el => {
+    const txt = el.dataset.text;
+    const speed = Math.max(18, Math.min(55, 900 / txt.length));
+    typeTimers.push(setTimeout(() => el.classList.add("caret"), t));
+    [...txt].forEach((ch, i) => typeTimers.push(setTimeout(() => el.textContent += ch, t + i * speed)));
+    t += txt.length * speed + 150;
+    typeTimers.push(setTimeout(() => el.classList.remove("caret"), t));
+  });
+  const last = els[els.length - 1];
+  if (last) typeTimers.push(setTimeout(() => last.classList.add("caret"), t));
+}
+
+/* ---------- router / navigation ---------- */
+let deck = null, cur = 0;
+
+function renderWeek(date, slideNo) {
+  const idx = WEEKS.findIndex(w => w.date === date);
+  if (idx < 0) return renderHome();
+  const S = buildWeek(WEEKS[idx], idx);
+  $stage.innerHTML = S.map((s, i) =>
+    `<section class="slide">${s}${chrome()}</section>`
+  ).join("");
+  deck = { date, slides: [...$stage.querySelectorAll(".slide")] };
+  go(Math.min(Math.max(slideNo || 0, 0), S.length - 1), true);
+}
+
+let seqTimer;
+function go(n, force) {
+  if (!deck) return;
+  n = Math.max(0, Math.min(deck.slides.length - 1, n));
+  if (n === cur && !force) return;
+  deck.slides[cur]?.classList.remove("active");
+  cur = n;
+  deck.slides[cur].classList.add("active");
+  deck.slides.forEach((sl, i) => sl.querySelectorAll("iframe[data-src]").forEach(f => {
+    const want = i === cur ? f.dataset.src : "";
+    if (f.getAttribute("src") !== want) want ? f.setAttribute("src", want) : f.removeAttribute("src");
+  }));
+  deck.slides.forEach((sl, i) => sl.querySelectorAll("video").forEach(v => {
+    if (i === cur) { v.currentTime = 0; v.play().catch(() => {}); } else v.pause();
+  }));
+  clearInterval(seqTimer);
+  deck.slides[cur].querySelectorAll(".seq").forEach(box => {
+    const imgs = [...box.children];
+    let k = 0;
+    imgs.forEach((im, j) => im.style.opacity = j ? 0 : 1);
+    seqTimer = setInterval(() => {
+      imgs[k].style.opacity = 0;
+      k = (k + 1) % imgs.length;
+      imgs[k].style.opacity = 1;
+    }, +box.dataset.interval);
+  });
+  typeIn(deck.slides[cur]);
+  history.replaceState(null, "", `#${deck.date}/${cur + 1}`);
+}
+
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (!h) { deck = null; cur = 0; return renderHome(); }
+  const [date, n] = h.split("/");
+  renderWeek(date, (parseInt(n, 10) || 1) - 1);
+}
+
+// 탭이 다시 보이면 현재 장표 영상 재생 이어가기 (Chrome은 숨겨진 탭의 무음 영상을 멈춤)
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible" && deck)
+    deck.slides[cur].querySelectorAll("video").forEach(v => { if (!v.ended) v.play().catch(() => {}); });
+});
+
+addEventListener("hashchange", () => {
+  const [date, n] = decodeURIComponent(location.hash.slice(1)).split("/");
+  if (!deck || deck.date !== date) route();
+  else go((parseInt(n, 10) || 1) - 1);
+});
+
+addEventListener("keydown", e => {
+  if (e.key === "f" || e.key === "F") {
+    document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    return;
+  }
+  if (e.key === "Escape") { location.hash = ""; return; }
+  if (!deck) return;
+  if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+  if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+  if (e.key === "Home") go(0);
+  if (e.key === "End") go(deck.slides.length - 1);
+});
+
+// iframe 안을 클릭한 뒤 바깥을 처음 클릭하면 포커스만 되돌리고 넘기지 않음
+let backFromFrame = false;
+addEventListener("blur", () => setTimeout(() => {
+  if (document.activeElement?.tagName === "IFRAME") backFromFrame = true;
+}));
+$stage.addEventListener("click", e => {
+  if (backFromFrame) { backFromFrame = false; return; }
+  if (!deck || e.target.closest("tr.link, a")) return;
+  const r = $stage.getBoundingClientRect();
+  go(e.clientX - r.left < r.width / 3 ? cur - 1 : cur + 1);
+});
+
+function fit() {
+  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+  $stage.style.transform = `scale(${s}) translate(-50%, -50%)`;
+}
+addEventListener("resize", fit);
+fit();
+route();
+
+// file:// 로 열었는데 로컬 서버(start.command)가 켜져 있으면 자동으로 그쪽으로 이동 → 유튜브 재생 가능
+if (location.protocol === "file:") {
+  fetch("http://localhost:8765/index.html", { mode: "no-cors", cache: "no-store" })
+    .then(() => location.replace("http://localhost:8765/" + location.hash))
+    .catch(() => {});
+}
+</script>
+</body>
+</html>
