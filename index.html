@@ -128,7 +128,9 @@ const WEEKS = [
     */
     { type: "image", src: "images/1007/fake-church.webp" },
   ] },
-  { date: "10.14.26" },
+  { date: "10.14.26", slides: [   // 제목 미정 → "Title Placeholder"
+    { type: "videos", title: "This Week’s Work", srcs: ["videos/1014/work-01.mp4", "videos/1014/work-02.mp4"] },
+  ] },
   { date: "10.21.26" },
   { date: "10.28.26" },
   { date: "11.04.26" },
@@ -144,6 +146,7 @@ const WEEKS = [
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
    work      { title, src: "videos/..mp4", text: [], meta } — 내 작업 영상 (파일 없으면 placeholder)
    seq       { dir, count, interval }        — dir/01.jpg … 순서대로 자동 전환 (ms)
+   videos    { title, srcs: [] }             — 영상 여러 개 나란히 (무음 반복재생)
    clip      { src }                         — 영상 파일 한 개, 화면 꽉 차게 (무음 자동재생)
    image     { src }                         — 이미지 한 장, 화면 꽉 차게 (비율 유지) */
 const DEFAULT = { title: "Title Placeholder", slides: [] };
@@ -169,7 +172,8 @@ function renderHome() {
     const diff = Math.floor((dt - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 864e5);
     const st = diff === 0 ? "Today" : diff < 0 ? "Past" : diff <= 7 ? "Next" : "Upcoming";
     return `<tr class="link" data-date="${w.date}">
-      <td>${w.date}</td>
+      <td style="width:260px">${w.date}</td>
+      <td>${esc(w.title || "")}</td>
       <td class="st">${st} · Wed</td></tr>`;
   }).join("");
 
@@ -247,6 +251,14 @@ const RENDER = {
       ${Array.from({ length: v.count }, (_, i) =>
         `<img src="${esc(v.dir)}/${String(i + 1).padStart(2, "0")}.jpg" alt="" loading="eager"
           style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:${i ? 0 : 1}">`).join("")}
+    </div>`,
+
+  videos: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div style="position:absolute;left:var(--pad);right:120px;top:50%;transform:translateY(-50%);
+                display:grid;grid-template-columns:repeat(${v.srcs.length},1fr);gap:16px">
+      ${v.srcs.map(src => `<video src="${esc(src)}" muted loop playsinline preload="auto"
+        style="width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ph);display:block"></video>`).join("")}
     </div>`,
 
   image: v => `
