@@ -77,6 +77,17 @@
   .ph::after  { width: 1px; height: 28px; transform: translate(-50%, -50%); }
   .ph span { font-size: 15px; color: #555; }
 
+  /* ---------- module grid (USM Haller) ---------- */
+  .modules {
+    position: absolute; inset: 0; right: 80px;
+    display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr);
+    gap: 1px; background: var(--line); border-right: 1px solid var(--line);
+  }
+  .modules > div { background: var(--bg); min-width: 0; min-height: 0; }
+  .mod-text { grid-column: 1 / 4; grid-row: 1 / 3; padding: var(--pad); display: flex; flex-direction: column; }
+  .mod { display: flex; align-items: center; justify-content: center; padding: 22px; }
+  .mod img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
   /* ---------- layouts ---------- */
   .abs { position: absolute; }
   .bottom-text { position: absolute; left: var(--pad); right: 120px; bottom: 60px; }
@@ -134,6 +145,11 @@ const WEEKS = [
     { type: "image", src: "images/1007/fake-church.webp" },
   ] },
   { date: "10.14.26", title: "Archive and Furniture Branding", slides: [
+    { type: "modules", label: "Case Study", title: "USM Haller", sub: "건축을 가구로",
+      text: "건축가 Fritz Haller가 설계한 공장의 스틸 모듈 구조를 그대로 가구 시스템으로 만들었다.",
+      dir: "images/1014/usm",   // us.usm.com Quickship 제품 이미지
+      files: ["01","04","05","06","07","08","09","11","12","13","14","15","16","17",
+              "18","19","20","21","22","23","24","25","28","30","32","34"] },
     { type: "videos", title: "This Week’s Work", srcs: ["videos/1014/work-01.mp4", "videos/1014/work-02.mp4"] },
   ] },
   { date: "10.21.26" },
@@ -150,6 +166,7 @@ const WEEKS = [
    text      { title, rows: [{k, v}], foot } — 생각 정리
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
    work      { title, src: "videos/..mp4", text: [], meta } — 내 작업 영상 (파일 없으면 placeholder)
+   modules   { label, title, sub, text, dir, files } — 8×4 모듈 그리드에 이미지 꽉 채우기 (왼쪽 위 3×2는 텍스트)
    seq       { dir, count, interval }        — dir/01.jpg … 순서대로 자동 전환 (ms)
    videos    { title, srcs: [] }             — 영상 여러 개 나란히 (무음 반복재생)
    clip      { src }                         — 영상 파일 한 개, 화면 꽉 차게 (무음 자동재생)
@@ -269,6 +286,17 @@ const RENDER = {
                 display:grid;grid-template-columns:repeat(${v.srcs.length},1fr);gap:16px">
       ${v.srcs.map(src => `<video src="${esc(src)}" muted loop playsinline preload="auto"
         style="width:100%;aspect-ratio:16/9;object-fit:cover;background:var(--ph);display:block"></video>`).join("")}
+    </div>`,
+
+  modules: v => `
+    <div class="modules">
+      <div class="mod-text">
+        <div class="small dim">${esc(v.label)}</div>
+        <div class="display type" data-text="${esc(v.title)}" style="font-size:120px;margin-top:18px"></div>
+        <div class="h2" style="margin-top:14px">${esc(v.sub)}</div>
+        <p class="body" style="margin-top:auto;font-size:26px;line-height:1.35">${esc(v.text)}</p>
+      </div>
+      ${v.files.map(f => `<div class="mod"><img src="${esc(v.dir)}/${esc(f)}.webp" alt=""></div>`).join("")}
     </div>`,
 
   image: v => `
