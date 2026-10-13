@@ -34,6 +34,11 @@
   .slide.active { display: block; }
 
   /* ---------- persistent chrome (futurneue-style) ---------- */
+  .home-btn {
+    position: absolute; right: 40px; top: 28px; z-index: 6;
+    font-size: 40px; line-height: 1; color: var(--fg); text-decoration: none;
+  }
+  .home-btn:hover { color: var(--dim); }
   .chrome-vert {
     position: absolute; right: 18px; bottom: var(--pad);
     writing-mode: vertical-rl; transform: rotate(180deg);
@@ -160,10 +165,12 @@ const ph = (label, img, style = "") =>
       : `<div class="ph" style="${style}"><span>${esc(label)}</span></div>`;
 
 function chrome() {
-  return `<div class="chrome-vert">© Collection Building — 2026</div>`;
+  return `<div class="chrome-vert">© Collection Building — 2026</div>
+    <a class="home-btn" href="#" aria-label="Home">←</a>`;
 }
 
 /* ---------- HOME: title → dates ---------- */
+let homeTimer;
 function renderHome() {
   const today = new Date();
   const rows = WEEKS.map((w, idx) => {
@@ -187,7 +194,10 @@ function renderHome() {
   </section>`;
   $stage.querySelectorAll("tr.link").forEach(tr =>
     tr.addEventListener("click", () => location.hash = tr.dataset.date));
-  typeIn($stage.querySelector("#home"));
+  const home = $stage.querySelector("#home");
+  typeIn(home);
+  clearInterval(homeTimer);
+  homeTimer = setInterval(() => typeIn(home), 5000);   // 5초마다 타이틀 다시 쓰기
 }
 
 /* ---------- WEEK DECK ---------- */
@@ -299,6 +309,7 @@ function typeIn(root) {
 let deck = null, cur = 0;
 
 function renderWeek(date, slideNo) {
+  clearInterval(homeTimer);
   const idx = WEEKS.findIndex(w => w.date === date);
   if (idx < 0) return renderHome();
   const S = buildWeek(WEEKS[idx], idx);
