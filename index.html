@@ -209,8 +209,19 @@ const WEEKS = [
         { k: "Sabine Marcelis",    v: "Marcelis처럼 빛은 면 안에서 번지게 하되, 늘 켜진 빛이 아니라 사람이 있을 때만 켜지는 빛으로 만든다." },
         { k: "Muller Van Severen", v: "Muller Van Severen의 절제처럼 다른 색이나 장식을 더하지 않는다." },
         { k: "Hyungshin Hwang",    v: "리빙 브랜드보다 황형신처럼 컬렉터블 디자인 갤러리 경로를 목표로 둔다." },
-        { k: "Naming",             v: "한국적이면서 이국적인 느낌은 브랜드명 하나에 다 담기보다, 브랜드명과 제품명에 역할을 나눠 만든다." },
       ] },
+    { type: "table", title: "네이밍에서 배울 점",
+      head: ["유형", "케이스", "나에게 적용하면", "한국성 / 이국성"],
+      widths: [20, 27, 27, 26],   // %
+      rows: [
+        ["디자이너 이름형", "Judd, Kuramata, Marcelis, Muller Van Severen, 황형신",
+         "JIN CHOI, Studio Jin Choi, CHOI", "이름 자체가 한국적, 영어 표기로 세계적. 갤러리 경로에 가장 강하다"],
+        ["조어·약자형", "USM, Rareraw",
+         "ONDO, IEUM처럼 로마자 한국어, 또는 영어 두 단어 조합", "소리가 이국적이고 뜻은 한국적"],
+        ["담백한 브랜드 + 시적인 제품명", "Kuramata(‘How High the Moon’), 황형신(‘Layered Steel Seat’)",
+         "브랜드는 짧고 구조적으로, 제품명을 시적으로 표현한다", "제품명에서 국문/영문을 오가며 이국성을 만든다"],
+      ],
+      foot: "한국적이면서 이국적인 느낌은 브랜드명 하나로 다 만들기보다, 브랜드명과 제품명의 역할을 나누면 훨씬 쉽게 나온다." },
   ] },
   { date: "10.21.26" },
   { date: "10.28.26" },
@@ -223,8 +234,9 @@ const WEEKS = [
 /* 슬라이드 타입
    video     { id: "YouTube ID", title }
    statement { label, en, ko, by }          — 인용/정의 한 문장
-   text      { title, rows: [{k, v}], foot } — 생각 정리
+   text      { title, rows: [{k, v}], foot, footSize: "h2", kWidth } — 생각 정리
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
+   table     { title, head: [], widths: [%], rows: [[...]], foot } — 여러 열 표
    work      { title, src: "videos/..mp4", text: [], meta } — 내 작업 영상 (파일 없으면 placeholder)
    modules   { label, title, sub, text, dir, files } — 8×4 모듈 그리드 (왼쪽 3열은 텍스트, 오른쪽 5×4 = 이미지 20개)
    case      { label, title, sub, text, dir, hero, heroRatio, imgs: [], imgFit: "contain", cols } — hero 없으면 cols 열 그리드 — 왼쪽 텍스트 + 오른쪽 사진 (큰 사진 1 + 아래 여러 장)
@@ -317,7 +329,17 @@ const RENDER = {
       <table class="rows" style="table-layout:fixed">${v.rows.map(r =>
         `<tr><td class="k" style="width:${v.kWidth || 300}px;color:var(--fg);font-size:40px;line-height:1.25">${esc(r.k)}</td><td style="font-size:40px;line-height:1.25">${esc(r.v)}</td></tr>`).join("")}</table>
     </div>
-    ${v.foot ? `<div class="bottom-text h1" style="bottom:70px">${esc(v.foot)}</div>` : ""}`,
+    ${v.foot ? `<div class="bottom-text ${v.footSize || "h1"}" style="bottom:70px">${esc(v.foot)}</div>` : ""}`,
+
+  table: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="abs" style="left:var(--pad);right:120px;top:220px">
+      <table class="rows" style="table-layout:fixed">
+        <tr>${v.head.map((h, i) => `<td style="width:${v.widths?.[i] ?? 25}%;font-size:20px;color:var(--dim);padding:14px 24px 14px 0">${esc(h)}</td>`).join("")}</tr>
+        ${v.rows.map(r => `<tr>${r.map((c, i) => `<td style="font-size:${i ? 28 : 32}px;line-height:1.35;padding:26px 24px 26px 0;vertical-align:top">${esc(c)}</td>`).join("")}</tr>`).join("")}
+      </table>
+    </div>
+    ${v.foot ? `<div class="bottom-text h2" style="bottom:70px">${esc(v.foot)}</div>` : ""}`,
 
   work: v => `
     <div class="display type" data-text="${esc(v.title)}" style="font-size:140px"></div>
@@ -429,6 +451,14 @@ const RENDER_M = {
     <div class="h2 type" data-text="${esc(v.title)}"></div>
     <div class="mt">${v.rows.map(r => `<div class="kv"><div class="k">${esc(r.k)}</div><div class="v">${esc(r.v)}</div></div>`).join("")}</div>
     ${v.foot ? `<div class="h1" style="margin-top:32px">${esc(v.foot)}</div>` : ""}`,
+
+  table: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="mt">${v.rows.map(r => `<div class="kv">
+      <div class="v" style="font-size:22px">${esc(r[0])}</div>
+      ${r.slice(1).map((c, i) => `<div class="k" style="margin-top:12px">${esc(v.head[i + 1])}</div><div class="v" style="font-size:16px">${esc(c)}</div>`).join("")}
+    </div>`).join("")}</div>
+    ${v.foot ? `<div class="h2" style="margin-top:32px">${esc(v.foot)}</div>` : ""}`,
 
   work: v => `
     <div class="display type" data-text="${esc(v.title)}"></div>
