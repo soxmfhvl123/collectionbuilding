@@ -99,6 +99,36 @@
   #home .rows td.st { text-align: right; font-size: 18px; color: var(--dim); }
   #home .rows tr.link:hover td.st { color: var(--bg); }
 
+  /* ---------- mobile / portrait: 세로 스크롤 피드 ---------- */
+  html.m, html.m body { overflow: auto; height: auto; }
+  .m #stage { position: static; width: 100%; height: auto; transform: none !important; overflow: visible; }
+  .m .slide, .m .slide.active { position: relative; display: block; inset: auto; padding: 72px 16px 64px; }
+  .m .slide + .slide { border-top: 1px solid var(--line); }
+  .m .chrome-vert { display: none; }
+  .m .home-btn { position: fixed; right: 12px; top: 10px; font-size: 26px; padding: 4px 8px; background: rgba(0,0,0,.6); }
+  .m .slide:not(:first-child) .home-btn { display: none; }
+  .m .display { font-size: clamp(44px, 15vw, 120px); }
+  .m .h1 { font-size: clamp(28px, 8.4vw, 64px); }
+  .m .h2 { font-size: clamp(22px, 6.2vw, 44px); }
+  .m .body { font-size: 17px; line-height: 1.5; }
+  .m .small { font-size: 13px; }
+  .m .rows td { font-size: 17px; }
+  .m .mt { margin-top: 20px; }
+  .m .media { width: 100%; display: block; background: var(--ph); object-fit: cover; }
+  .m .grid { display: grid; gap: 8px; }
+  .m .stack > * + * { margin-top: 8px; }
+  .m .kv { padding: 14px 0; border-top: 1px solid var(--line); }
+  .m .kv:last-child { border-bottom: 1px solid var(--line); }
+  .m .kv .k { color: var(--dim); font-size: 13px; margin-bottom: 6px; }
+  .m .kv .v { font-size: 19px; line-height: 1.45; }
+  .m .mods { grid-template-columns: repeat(3, 1fr); gap: 4px; }
+  .m .mods div { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; padding: 8px; }
+  .m .mods img { max-width: 100%; max-height: 100%; }
+  .m #home .rows td { font-size: 22px; padding: 12px 0; }
+  .m #home .rows td.st { font-size: 12px; }
+  .m #home .rows td.tt { display: none; }
+  .m #home .rows td .tt-m { display: block; font-size: 14px; color: var(--dim); margin-top: 4px; }
+  #home .rows td .tt-m { display: none; }
 </style>
 </head>
 <body>
@@ -226,8 +256,8 @@ function renderHome() {
     const diff = Math.floor((dt - new Date(today.getFullYear(), today.getMonth(), today.getDate())) / 864e5);
     const st = diff === 0 ? "Today" : diff < 0 ? "Past" : diff <= 7 ? "Next" : "Upcoming";
     return `<tr class="link" data-date="${w.date}">
-      <td style="width:260px">${w.date}</td>
-      <td>${esc(w.title || "")}</td>
+      <td style="width:${MOBILE ? "auto" : "260px"}">${w.date}${w.title ? `<span class="tt-m">${esc(w.title)}</span>` : ""}</td>
+      <td class="tt">${esc(w.title || "")}</td>
       <td class="st">${st} · Wed</td></tr>`;
   }).join("");
 
@@ -235,7 +265,7 @@ function renderHome() {
   <section class="slide active" id="home">
     <div class="chrome-vert">© Collection Building — 2026</div>
     <div class="display type" data-text="COLLECTION BUILDING"></div>
-    <div class="abs" style="left:var(--pad);right:120px;top:470px">
+    <div class="${MOBILE ? "mt" : "abs"}" style="${MOBILE ? "margin-top:40px" : "left:var(--pad);right:120px;top:470px"}">
       <table class="rows">${rows}</table>
     </div>
   </section>`;
@@ -253,7 +283,8 @@ function buildWeek(w, idx) {
   const cover = `
     <div class="display type" data-text="${esc(c.date)}"></div>
     <div class="display type" data-text="${esc(c.title)}" style="margin-top:10px"></div>`;
-  return [cover, ...c.slides.map(x => RENDER[x.type](x))];
+  const R = MOBILE ? RENDER_M : RENDER;
+  return [cover, ...c.slides.map(x => R[x.type](x))];
 }
 
 const metaTable = rows => `<table class="rows">${rows.map(([k, v]) =>
@@ -369,10 +400,80 @@ const RENDER = {
     </div>`,
 };
 
+/* ---------- 모바일/세로 화면용: 같은 데이터를 세로로 흐르는 레이아웃으로 ---------- */
+const mImg = (src, ratio, fit = "cover") =>
+  `<div class="media" style="aspect-ratio:${ratio};background:${fit === "contain" ? "transparent" : "var(--ph)"} url('${esc(src)}') center/${fit} no-repeat"></div>`;
+const mHead = v => `
+  ${v.label ? `<div class="small dim">${esc(v.label)}</div>` : ""}
+  <div class="${v.label ? "display" : "h2"} type" data-text="${esc(v.title)}" style="${v.label ? "font-size:clamp(40px,12vw,96px);margin-top:10px" : ""}"></div>
+  ${v.sub ? `<div class="h2" style="margin-top:8px">${esc(v.sub)}</div>` : ""}
+  ${v.text ? `<p class="body mt">${esc(v.text)}</p>` : ""}`;
+
+const RENDER_M = {
+  video: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="mt">${location.protocol === "file:"
+      ? `<a href="https://www.youtube.com/watch?v=${esc(v.id)}" target="_blank">${mImg(`https://img.youtube.com/vi/${v.id}/maxresdefault.jpg`, "16/9")}</a>`
+      : `<iframe class="media" data-src="https://www.youtube.com/embed/${esc(v.id)}?rel=0&modestbranding=1&playsinline=1"
+           referrerpolicy="strict-origin-when-cross-origin" style="aspect-ratio:16/9;border:0"
+           allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`}</div>`,
+
+  statement: v => `
+    <div class="small dim">${esc(v.label)}</div>
+    <div class="h1 type mt" data-text="${esc(v.en)}"></div>
+    <div class="h2 mt" style="color:var(--dim)">${esc(v.ko)}</div>
+    <div class="small dim" style="margin-top:32px">${esc(v.by)}</div>`,
+
+  text: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="mt">${v.rows.map(r => `<div class="kv"><div class="k">${esc(r.k)}</div><div class="v">${esc(r.v)}</div></div>`).join("")}</div>
+    ${v.foot ? `<div class="h1" style="margin-top:32px">${esc(v.foot)}</div>` : ""}`,
+
+  work: v => `
+    <div class="display type" data-text="${esc(v.title)}"></div>
+    <video class="media mt" src="${esc(v.src)}" muted loop playsinline preload="metadata" style="aspect-ratio:16/9"></video>
+    ${(v.text || []).map(t => `<p class="body mt">${esc(t)}</p>`).join("")}`,
+
+  clip: v => `<video class="media" src="${esc(v.src)}" muted playsinline preload="metadata" style="aspect-ratio:16/9;object-fit:contain"></video>`,
+
+  seq: v => `
+    <div class="seq" data-interval="${v.interval || 1500}" style="position:relative;aspect-ratio:16/9;background:#000">
+      ${Array.from({ length: v.count }, (_, i) =>
+        `<img src="${esc(v.dir)}/${String(i + 1).padStart(2, "0")}.jpg" alt="" loading="lazy"
+          style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:${i ? 0 : 1}">`).join("")}
+    </div>`,
+
+  videos: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="mt stack">${v.srcs.map(src =>
+      `<video class="media" src="${esc(src)}" muted loop playsinline preload="metadata" style="aspect-ratio:16/9"></video>`).join("")}</div>`,
+
+  modules: v => `
+    ${mHead(v)}
+    <div class="grid mods mt">${v.files.map(f => `<div><img src="${esc(v.dir)}/${esc(f)}.webp" alt="" loading="lazy"></div>`).join("")}</div>`,
+
+  case: v => `
+    ${mHead(v)}
+    <div class="mt stack">
+      ${v.hero ? mImg(`${v.dir}/${v.hero}`, v.heroRatio || 1.6) : ""}
+      <div class="grid" style="grid-template-columns:repeat(${v.imgFit === "contain" ? 3 : 2},1fr)">
+        ${v.imgs.map(f => mImg(`${v.dir}/${f}`, v.imgFit === "contain" ? "4/3" : "1", v.imgFit === "contain" ? "90% auto" : "cover")).join("")}
+      </div>
+    </div>`,
+
+  image: v => `<img class="media" src="${esc(v.src)}" alt="" loading="lazy" style="height:auto;object-fit:contain;background:#000">`,
+
+  embed: v => `
+    <div class="display type" data-text="${esc(v.title)}"></div>
+    <iframe class="media mt" data-src="${esc(v.url)}" style="aspect-ratio:3/4;max-height:80vh;border:0;background:#000"></iframe>
+    ${(v.text || []).map(t => `<p class="body mt">${esc(t)}</p>`).join("")}
+    <p class="small dim mt"><a href="${esc(v.url)}" target="_blank" style="color:inherit">${esc(v.url.replace(/^https?:\/\//, ""))} ↗</a></p>`,
+};
+
 /* ---------- typing effect ---------- */
 let typeTimers = [];
-function typeIn(root) {
-  typeTimers.forEach(clearTimeout); typeTimers = [];
+function typeIn(root, keep) {          // keep: 다른 섹션의 타이핑을 끊지 않음 (모바일 피드)
+  if (!keep) { typeTimers.forEach(clearTimeout); typeTimers = []; }
   const els = [...root.querySelectorAll(".type")];
   els.forEach(el => { el.textContent = ""; el.classList.remove("caret"); });
   let t = 0;
@@ -400,7 +501,36 @@ function renderWeek(date, slideNo) {
     `<section class="slide">${s}${chrome()}</section>`
   ).join("");
   deck = { date, slides: [...$stage.querySelectorAll(".slide")] };
+  if (MOBILE) return mobileFeed(slideNo);
   go(Math.min(Math.max(slideNo || 0, 0), S.length - 1), true);
+}
+
+/* 모바일: 모든 장표를 세로로 펼치고, 화면에 들어온 장표만 재생/타이핑 */
+let feedObs, seqTimers = new Map();
+function startSeq(box) {
+  if (seqTimers.has(box)) return;
+  const imgs = [...box.children]; let k = imgs.findIndex(im => im.style.opacity === "1");
+  seqTimers.set(box, setInterval(() => {
+    imgs[k].style.opacity = 0; k = (k + 1) % imgs.length;
+    imgs[k].loading = "eager"; imgs[k].style.opacity = 1;
+  }, +box.dataset.interval));
+}
+function stopSeq(box) { clearInterval(seqTimers.get(box)); seqTimers.delete(box); }
+function mobileFeed(slideNo) {
+  feedObs?.disconnect();
+  seqTimers.forEach(clearInterval); seqTimers.clear();
+  deck.slides.forEach(sl => sl.classList.add("active"));
+  feedObs = new IntersectionObserver(entries => entries.forEach(({ target: sl, isIntersecting: on }) => {
+    if (on && !sl.dataset.typed) { sl.dataset.typed = 1; typeIn(sl, true); }
+    sl.querySelectorAll("video").forEach(v => on ? v.play().catch(() => {}) : v.pause());
+    sl.querySelectorAll("iframe[data-src]").forEach(f => {
+      if (on && !f.getAttribute("src")) f.src = f.dataset.src;
+      if (!on && /youtube/.test(f.dataset.src)) f.removeAttribute("src");   // 화면 밖 유튜브 소리 정지
+    });
+    sl.querySelectorAll(".seq").forEach(b => on ? startSeq(b) : stopSeq(b));
+  }), { threshold: 0.35 });
+  deck.slides.forEach(sl => feedObs.observe(sl));
+  if (slideNo > 0) deck.slides[slideNo]?.scrollIntoView();
 }
 
 let seqTimer;
@@ -434,6 +564,8 @@ function go(n, force) {
 }
 
 function route() {
+  feedObs?.disconnect(); seqTimers.forEach(clearInterval); seqTimers.clear();
+  scrollTo(0, 0);
   const h = decodeURIComponent(location.hash.slice(1));
   if (!h) { deck = null; cur = 0; return renderHome(); }
   const [date, n] = h.split("/");
@@ -449,6 +581,7 @@ document.addEventListener("visibilitychange", () => {
 addEventListener("hashchange", () => {
   const [date, n] = decodeURIComponent(location.hash.slice(1)).split("/");
   if (!deck || deck.date !== date) route();
+  else if (MOBILE) deck.slides[(parseInt(n, 10) || 1) - 1]?.scrollIntoView();
   else go((parseInt(n, 10) || 1) - 1);
 });
 
@@ -458,7 +591,7 @@ addEventListener("keydown", e => {
     return;
   }
   if (e.key === "Escape") { location.hash = ""; return; }
-  if (!deck) return;
+  if (!deck || MOBILE) return;
   if (["ArrowRight", "ArrowDown", " ", "PageDown", "Enter"].includes(e.key)) { e.preventDefault(); go(cur + 1); }
   if (["ArrowLeft", "ArrowUp", "PageUp", "Backspace"].includes(e.key)) { e.preventDefault(); go(cur - 1); }
   if (e.key === "Home") go(0);
@@ -472,17 +605,28 @@ addEventListener("blur", () => setTimeout(() => {
 }));
 $stage.addEventListener("click", e => {
   if (backFromFrame) { backFromFrame = false; return; }
-  if (!deck || e.target.closest("tr.link, a")) return;
+  if (!deck || MOBILE || e.target.closest("tr.link, a")) return;
   const r = $stage.getBoundingClientRect();
   go(e.clientX - r.left < r.width / 3 ? cur - 1 : cur + 1);
 });
 
+/* 화면이 좁거나 세로면 모바일 피드, 아니면 1920×1080 장표를 화면에 맞춰 축소 */
+let MOBILE = false;
 function fit() {
-  const s = Math.min(innerWidth / 1920, innerHeight / 1080);
-  $stage.style.transform = `scale(${s}) translate(-50%, -50%)`;
+  const m = innerWidth < 900 || innerHeight > innerWidth;
+  if (m !== MOBILE) {
+    MOBILE = m;
+    document.documentElement.classList.toggle("m", m);
+    if (fit.ready) route();
+  }
+  if (!MOBILE) {
+    const s = Math.min(innerWidth / 1920, innerHeight / 1080);
+    $stage.style.transform = `scale(${s}) translate(-50%, -50%)`;
+  }
 }
 addEventListener("resize", fit);
 fit();
+fit.ready = true;
 route();
 
 // file:// 로 열었는데 로컬 서버(start.command)가 켜져 있으면 자동으로 그쪽으로 이동 → 유튜브 재생 가능
