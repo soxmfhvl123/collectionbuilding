@@ -20,7 +20,8 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html, body { height: 100%; background: var(--bg); color: var(--fg); overflow: hidden; }
-  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; cursor: default; }
+  body { font-family: var(--sans); -webkit-font-smoothing: antialiased; cursor: default;
+         word-break: keep-all; overflow-wrap: break-word; }   /* 한글 단어 중간에서 줄바꿈 안 되게 */
 
   /* ---------- 1920x1080 stage, scaled to fit ---------- */
   #stage {
@@ -378,7 +379,7 @@ const RENDER = {
   brand: v => `
     <div class="wordmark" style="font-size:300px;margin-top:40px"><i>kinda</i> Official</div>
     <div class="h1" style="max-width:1600px;margin-top:80px;font-size:64px;line-height:1.15">${esc(v.en)}</div>
-    <div class="h2" style="max-width:1600px;margin-top:32px;font-size:36px;line-height:1.35;color:var(--dim)">${esc(v.ko)}</div>`,
+    <div class="h2" style="max-width:1760px;margin-top:32px;font-size:36px;line-height:1.35;color:var(--dim)">${esc(v.ko)}</div>`,
 
   site: v => `
     <div style="display:flex;align-items:baseline;gap:32px">
