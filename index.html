@@ -6,7 +6,7 @@
 <title>Collection Building</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #000;
@@ -98,6 +98,10 @@
   #home .rows td { font-size: 34px; padding: 8px 0; }
   #home .rows td.st { text-align: right; font-size: 18px; color: var(--dim); }
   #home .rows tr.link:hover td.st { color: var(--bg); }
+
+  /* Kinda Official 워드마크: Official 정체, kinda만 이탤릭 */
+  .wordmark { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; letter-spacing: -.01em; line-height: 1; }
+  .wordmark i { font-style: italic; }
 
   /* ---------- mobile / portrait: 세로 스크롤 피드 ---------- */
   html.m, html.m body { overflow: auto; height: auto; }
@@ -222,7 +226,43 @@ const WEEKS = [
       ],
       foot: "한국적이면서 이국적인 느낌은 브랜드명 하나로 다 만들기보다, 브랜드명과 제품명의 역할을 나누면 훨씬 쉽게 나온다." },
   ] },
-  { date: "10.21.26" },
+  { date: "10.21.26", title: "Kinda Official", slides: [
+    { type: "table", title: "지난주에서 이어서",
+      head: ["10.14에서 배운 것", "Kinda Official에서"], widths: [44, 56],
+      rows: [
+        ["네이밍 — 조어형, 영어 두 단어 조합", "브랜드명 Kinda Official"],
+        ["네이밍 — 담백한 브랜드 + 시적인 제품명", "제품명 Warm Welcome · Yellow Box"],
+        ["Judd — 사람의 흔적을 지운 상자", "Yellow Box — 앉아 있던 시간만큼 빛이 남는 상자"],
+        ["Marcelis — 사람이 있을 때만 켜지는 빛", "Warm Welcome — 코트를 걸면 켜지는 빛"],
+        ["Muller Van Severen — 색과 장식을 더하지 않는다", "스튜디오는 색을 칠하지 않는다. 빛은 작품 안에만"],
+        ["황형신 — 컬렉터블 디자인 갤러리 경로", "Object 라인 — 갤러리와 컬렉터를 위한 페이지"],
+      ] },
+    { type: "brand",
+      en: "Kinda Official is a Seoul-based duo turning data into light and space, to show where people stand among machines.",
+      ko: "Kinda Official은 데이터를 빛과 공간으로 옮겨, 기계 사이에서 사람이 어디에 서 있는지 보여주는 서울의 2인 스튜디오입니다." },
+    { type: "table", title: "틀은 Official, 빛은 Kinda",
+      head: ["", "Official", "Kinda"], widths: [18, 41, 41],
+      rows: [
+        ["뜻", "정확함. 기계가 내놓는 답", "사람다움. 사람이 서 있는 자리"],
+        ["브랜드에서", "흰 페이지, Helvetica, 같은 크기, 같은 간격, 사실만 적은 표", "워드마크의 기울어진 kinda, 작품이 내는 따뜻한 빛, 그 앞의 사람"],
+        ["누가 만드나", "스튜디오 (틀)", "작품과 사람 (내용)"],
+        ["색", "검정과 흰색, 회색 둘", "사진과 영상 속 빛. 스튜디오는 색을 더하지 않는다"],
+      ],
+      foot: "Official은 똑바로 서 있고, kinda만 살짝 기울어 있다." },
+    { type: "site", title: "kindaofficial.xyz", url: "https://kindaofficial.xyz",
+      note: "Object · Studio · Records" },
+    { type: "videos", title: "Object", ratio: "16/9", capStack: true,
+      srcs: ["videos/1021/warmwelcome.mp4", "videos/1021/yellowbox.mp4"],
+      captions: [["Warm Welcome, 2026", "코트를 걸면 방에 불이 켜집니다."],
+                 ["Yellow Box, 2026", "앉으면 켜지고, 일어나도 앉아 있던 시간만큼 켜져 있습니다."]] },
+    { type: "text", title: "다음 단계", kWidth: 360,
+      rows: [
+        { k: "Object",      v: "두 작품의 치수, 에디션 수, 센서 종류 확정" },
+        { k: "영상",        v: "실물 히어로 영상 촬영 (그 전까지 렌더 영상에 RENDER 표기)" },
+        { k: "FAKE CHURCH", v: "프로젝트 공개 시점과 Dataism 실시간 숫자 여부" },
+        { k: "사이트",      v: "뉴스레터 연결, 회색 글자·파비콘 정리" },
+      ] },
+  ] },
   { date: "10.28.26" },
   { date: "11.04.26" },
   { date: "11.11.26" },
@@ -236,6 +276,8 @@ const WEEKS = [
    text      { title, rows: [{k, v}], foot, footSize: "h2", kWidth } — 생각 정리
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
    table     { title, head: [], widths: [%], rows: [[...]], foot } — 여러 열 표
+   brand     { en, ko }                       — Kinda Official 워드마크 + 한 문장
+   site      { title, url, note }             — 웹사이트를 장표 안에 크게 (직접 클릭 가능)
    work      { title, src: "videos/..mp4", text: [], meta } — 내 작업 영상 (파일 없으면 placeholder)
    modules   { label, title, sub, text, dir, files } — 8×4 모듈 그리드 (왼쪽 3열은 텍스트, 오른쪽 5×4 = 이미지 20개)
    case      { label, title, sub, text, dir, hero, heroRatio, imgs: [], imgFit: "contain", cols } — hero 없으면 cols 열 그리드 — 왼쪽 텍스트 + 오른쪽 사진 (큰 사진 1 + 아래 여러 장)
@@ -340,6 +382,20 @@ const RENDER = {
     </div>
     ${v.foot ? `<div class="bottom-text h2" style="bottom:70px">${esc(v.foot)}</div>` : ""}`,
 
+  brand: v => `
+    <div class="wordmark" style="font-size:300px;margin-top:40px"><i>kinda</i> Official</div>
+    <div class="h1" style="max-width:1600px;margin-top:80px;font-size:64px;line-height:1.15">${esc(v.en)}</div>
+    <div class="h2" style="max-width:1600px;margin-top:32px;font-size:36px;line-height:1.35;color:var(--dim)">${esc(v.ko)}</div>`,
+
+  site: v => `
+    <div style="display:flex;align-items:baseline;gap:32px">
+      <div class="h2 type" data-text="${esc(v.title)}"></div>
+      <a class="small dim" href="${esc(v.url)}" target="_blank" style="color:inherit;font-size:22px">${esc(v.note || "")} ↗</a>
+    </div>
+    <div class="abs" style="left:var(--pad);right:120px;top:150px;bottom:var(--pad);background:#fff">
+      <iframe data-src="${esc(v.url)}" style="width:100%;height:100%;border:0"></iframe>
+    </div>`,
+
   work: v => `
     <div class="display type" data-text="${esc(v.title)}" style="font-size:140px"></div>
     <div class="ph abs" style="left:var(--pad);top:240px;width:1180px;height:664px">
@@ -369,7 +425,10 @@ const RENDER = {
                 display:grid;grid-template-columns:repeat(${v.srcs.length},1fr);gap:16px;${v.maxWidth ? `max-width:${v.maxWidth}px;` : ""}${v.center ? "margin:0 auto;" : ""}">
       ${v.srcs.map((src, i) => `<div>${linkWrap(v.link, vid(src, `muted loop playsinline preload="auto"`,
         `width:100%;aspect-ratio:${v.ratio || "16/9"};object-fit:cover;background:var(--ph);display:block`))}
-        ${v.captions?.[i] ? `<div style="display:flex;align-items:baseline;gap:20px;margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
+        ${v.captions?.[i] && v.capStack ? `<div style="margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
+          <div class="small dim" style="font-size:22px">${esc(v.captions[i][0])}</div>
+          <div style="font-size:36px;line-height:1.3;margin-top:10px">${esc(v.captions[i][1])}</div></div>` :
+        v.captions?.[i] ? `<div style="display:flex;align-items:baseline;gap:20px;margin-top:22px;border-top:1px solid var(--line);padding-top:18px">
           <span class="small dim" style="font-size:22px">${esc(v.captions[i][0])}</span>
           <span class="h2">${esc(v.captions[i][1])}</span></div>` : ""}</div>`).join("")}
     </div>`,
@@ -482,8 +541,19 @@ const RENDER_M = {
 
   videos: v => `
     <div class="h2 type" data-text="${esc(v.title)}"></div>
-    <div class="mt stack">${v.srcs.map(src =>
-      linkWrap(v.link, vid(src, `class="media" muted loop playsinline preload="metadata"`, `aspect-ratio:${v.ratio || "16/9"}`))).join("")}</div>`,
+    <div class="mt stack">${v.srcs.map((src, i) =>
+      linkWrap(v.link, vid(src, `class="media" muted loop playsinline preload="metadata"`, `aspect-ratio:${v.ratio || "16/9"}`))
+      + (v.captions?.[i] ? `<div class="kv" style="margin-bottom:16px"><div class="k">${esc(v.captions[i][0])}</div><div class="v">${esc(v.captions[i][1])}</div></div>` : "")).join("")}</div>`,
+
+  brand: v => `
+    <div class="wordmark" style="font-size:clamp(48px,17vw,120px)"><i>kinda</i> Official</div>
+    <div class="h2" style="margin-top:32px">${esc(v.en)}</div>
+    <p class="body mt dim">${esc(v.ko)}</p>`,
+
+  site: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <iframe class="media mt" data-src="${esc(v.url)}" style="aspect-ratio:9/16;max-height:80vh;border:0;background:#fff"></iframe>
+    <p class="small dim mt"><a href="${esc(v.url)}" target="_blank" style="color:inherit">${esc(v.note || v.url)} ↗</a></p>`,
 
   modules: v => `
     ${mHead(v)}
