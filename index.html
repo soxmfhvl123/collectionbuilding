@@ -268,7 +268,7 @@ const WEEKS = [
       text: "착석 시 00:00부터 체류 시간이 올라가고(mm:ss), 기립 시 카운트 다운되며, 체류 중 다시 앉으면 남은 시간부터 카운트가 재개됩니다.",
       dir: "images/1028",
       figs: [["plan.jpg", "Top"], ["back.jpg", "Back"], ["side.jpg", "Side"], ["acrylic.jpg", "Acrylic"]] },
-    { type: "image", src: "images/1028/outdoor.jpg" },   // 야외 착석 사진 (세로 원본을 16:9로 자름)
+    { type: "image", src: "images/1028/outdoor.jpg", width: 1240 },   // 야외 착석 사진 (세로 원본을 16:9로 자름)
   ] },
   { date: "11.04.26" },
   { date: "11.11.26" },
@@ -290,7 +290,7 @@ const WEEKS = [
    seq       { dir, count, interval }        — dir/01.jpg … 순서대로 자동 전환 (ms)
    videos    { title, srcs: [], captions: [[label, value]], maxWidth, center, ratio: "16/10", link } — .webm은 같은 이름 .mp4 자동 대체             — 영상 여러 개 나란히 (무음 반복재생)
    clip      { src }                         — 영상 파일 한 개, 화면 꽉 차게 (무음 자동재생)
-   image     { src }                         — 이미지 한 장, 화면 꽉 차게 (비율 유지)
+   image     { src, width }                  — 이미지 한 장, 화면 꽉 차게 (비율 유지) / width 주면 가운데 작게
    media     { src, label, caption, fit }    — 이미지/영상 한 장 꽉 차게 + 아래 캡션 (영상은 무음 반복재생)
    spec      { label, title, sub, rows: [[k, v]], text, dir, figs: [[file, caption]] } — 왼쪽 스펙 표 + 오른쪽 도면 2×2 */
 const DEFAULT = { title: "Title Placeholder", slides: [] };
@@ -474,8 +474,9 @@ const RENDER = {
       return box(v.hero, L, T, W, heroH) + v.imgs.map((f, i) => box(f, L + i * (cw + G), T + heroH + G, cw, ch, v.imgFit)).join("");
     })()}`,
 
-  image: v => `
-    <img src="${esc(v.src)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000">`,
+  image: v => v.width   // width 주면 화면 가운데에 그 너비로 작게
+    ? `<img src="${esc(v.src)}" alt="" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:${v.width}px;max-height:${1080 - 160}px;object-fit:contain">`
+    : `<img src="${esc(v.src)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000">`,
 
   media: v => `
     ${isVid(v.src)
