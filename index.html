@@ -276,7 +276,7 @@ const WEEKS = [
         { k: "이름의 의미", v: "들숨 = 숨을 들이쉬는 것. 사람이 오면 숨을 들이쉬고, 떠나면 천천히 내쉬며 다시 고요해진다." },
       ] },
     { type: "media", src: "videos/1028/breathing-ceiling.mp4", label: "Breath — 숨 쉬는 펜던트 조명", caption: "사람이 다가오면 숨 쉬듯 물결친다" },
-      { type: "site", title: "웜 디퓨저 패널", url: "works/1028/warm-panel.html", note: "커서를 올리면 빛이 따라온다" },
+      { type: "site", title: "웜 디퓨저 패널", url: "works/1028/warm-panel.html" },
   ] },
   { date: "11.04.26" },
   { date: "11.11.26" },
@@ -407,7 +407,7 @@ const RENDER = {
   site: v => `
     <div style="display:flex;align-items:baseline;gap:32px">
       <div class="h2 type" data-text="${esc(v.title)}"></div>
-      <a class="small dim" href="${esc(v.url)}" target="_blank" style="color:inherit;font-size:22px">${esc(v.note || "")} ↗</a>
+      ${v.note ? `<a class="small dim" href="${esc(v.url)}" target="_blank" style="color:inherit;font-size:22px">${esc(v.note)} ↗</a>` : ""}
     </div>
     <div class="abs" style="left:var(--pad);right:120px;top:150px;bottom:var(--pad);background:#fff">
       <iframe data-src="${esc(v.url)}" style="width:100%;height:100%;border:0"></iframe>
@@ -603,7 +603,7 @@ const RENDER_M = {
   site: v => `
     <div class="h2 type" data-text="${esc(v.title)}"></div>
     <iframe class="media mt" data-src="${esc(v.url)}" style="aspect-ratio:9/16;max-height:80vh;border:0;background:#fff"></iframe>
-    <p class="small dim mt"><a href="${esc(v.url)}" target="_blank" style="color:inherit">${esc(v.note || v.url)} ↗</a></p>`,
+    ${v.note ? `<p class="small dim mt"><a href="${esc(v.url)}" target="_blank" style="color:inherit">${esc(v.note)} ↗</a></p>` : ""}`,
 
   modules: v => `
     ${mHead(v)}
