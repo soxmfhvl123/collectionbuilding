@@ -101,7 +101,8 @@ body{background:var(--wall);overflow:hidden}
   const gctx = glow.getContext('2d');
   const img = gctx.createImageData(G, G);
   const F = new Float32Array(G*G);
-  const st = { over:false, press:false, tx:.5, ty:.45, x:.5, y:.45, vx:0, vy:0 };
+  const st = { over:false, press:false, tx:.5, ty:.46, x:.5, y:.46, vx:0, vy:0,
+               mode:'float', floatStart:0, leaveAt:0 };
 
   // 밝기 → 색 (속은 따뜻한 흰빛, 바깥은 주황·붉은빛)
   const AMBER = [[0,[95,28,0]],[.3,[205,85,15]],[.6,[255,155,60]],[.85,[255,210,145]],[1.15,[255,242,220]]];
@@ -141,22 +142,40 @@ body{background:var(--wall);overflow:hidden}
   panel.addEventListener('pointerenter', e => { pos(e); st.over=true; });
   panel.addEventListener('pointermove', e => { pos(e); st.over=true; });
   panel.addEventListener('pointerdown', e => { pos(e); st.over=true; st.press=true; });
-  const up = e => { st.press=false; if(e.pointerType!=='mouse') st.over=false; };
+  function leave(){ st.over=false; st.press=false; st.mode='return'; st.leaveAt=performance.now(); }
+  const up = e => { st.press=false; if(e.pointerType!=='mouse') leave(); };
   panel.addEventListener('pointerup', up);
   panel.addEventListener('pointercancel', up);
-  panel.addEventListener('pointerleave', () => { st.over=false; st.press=false; });
+  panel.addEventListener('pointerleave', () => { if(st.over) leave(); });
 
   let press = 0;
   function frame(now){
-    if(!st.over && !reduce){
-      st.tx = .5 + .24*Math.sin(now*.00031);
-      st.ty = .46 + .2*Math.sin(now*.00047 + 1.3);
-    } else if(!st.over){ st.tx=.5; st.ty=.45; }
+    if(!st.over){
+      // 1) 손을 떼면 천천히 가운데로 돌아감
+      if(st.mode === 'return'){
+        st.tx = .5; st.ty = .46;
+        const dist = Math.hypot(st.x-.5, st.y-.46), spd = Math.hypot(st.vx, st.vy);
+        if(reduce || (dist < .015 && spd < .0008) || now - st.leaveAt > 4000){
+          st.mode = 'float'; st.floatStart = now;
+        }
+      }
+      // 2) 가운데에서부터 서서히 다시 떠다님
+      if(st.mode === 'float'){
+        if(reduce){ st.tx = .5; st.ty = .46; }
+        else{
+          const tau = now - st.floatStart;
+          const r = Math.min(1, tau/5000), A = r*r*(3-2*r);
+          st.tx = .5 + A*.24*Math.sin(tau*.00031);
+          st.ty = .46 + A*.2*Math.sin(tau*.00047);
+        }
+      }
+    }
 
     if(reduce){ st.x=st.tx; st.y=st.ty; }
     else{
-      st.vx = (st.vx + (st.tx-st.x)*.065)*.8;
-      st.vy = (st.vy + (st.ty-st.y)*.065)*.8;
+      const k = st.over ? .012 : .003, damp = st.over ? .85 : .92;
+      st.vx = (st.vx + (st.tx-st.x)*k)*damp;
+      st.vy = (st.vy + (st.ty-st.y)*k)*damp;
       st.x += st.vx; st.y += st.vy;
     }
     press += ((st.press?1:0) - press)*(reduce?1:.12);
