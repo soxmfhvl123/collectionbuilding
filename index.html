@@ -286,7 +286,11 @@ const WEEKS = [
       ] },
     { type: "media", src: "videos/1028/breathing-ceiling.mp4", label: "Breath — 숨 쉬는 펜던트 조명", caption: "사람이 다가오면 숨 쉬듯 물결친다" },
   ] },
-  { date: "11.04.26" },
+  { date: "11.04.26", title: "Prototype", slides: [
+    { type: "gallery", title: "Prototype", dir: "images/1104",
+      files: ["proto-1.webp", "proto-2.webp", "proto-3.webp", "proto-4.webp", "proto-5.webp", "proto-6.webp"] },
+    { type: "image", src: "images/1104/stand.webp", width: 700 },   // 스탠드 렌더 (흰 배경 제거)
+  ] },
   { date: "11.11.26" },
   { date: "11.18.26" },
   { date: "11.25.26" },
@@ -297,6 +301,7 @@ const WEEKS = [
    statement { label, en, ko, by }          — 인용/정의 한 문장
    text      { title, rows: [{k, v}], foot, footSize: "h2", kWidth } — 생각 정리
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
+   gallery   { title, dir, files, cols } — 이미지 그리드 (기본 3열)
    table     { title, head: [], widths: [%], rows: [[...]], foot } — 여러 열 표
    brand     { en, ko }                       — Kinda Official 워드마크 + 한 문장
    site      { title, url, note }             — 웹사이트를 장표 안에 크게 (직접 클릭 가능)
@@ -491,6 +496,13 @@ const RENDER = {
       return box(v.hero, L, T, W, heroH) + v.imgs.map((f, i) => box(f, L + i * (cw + G), T + heroH + G, cw, ch, v.imgFit)).join("");
     })()}`,
 
+  gallery: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="abs" style="left:var(--pad);right:120px;top:150px;bottom:var(--pad);display:grid;gap:12px;
+         grid-template-columns:repeat(${v.cols || 3},1fr);grid-auto-rows:1fr">
+      ${v.files.map(f => `<div style="background:#000;overflow:hidden;min-height:0"><img src="${esc(v.dir)}/${esc(f)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></div>`).join("")}
+    </div>`,
+
   image: v => v.width   // width 주면 화면 가운데에 그 너비로 작게
     ? `<img src="${esc(v.src)}" alt="" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:${v.width}px;max-height:${1080 - 160}px;object-fit:contain">`
     : `<img src="${esc(v.src)}" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000">`,
@@ -625,6 +637,11 @@ const RENDER_M = {
         ${v.imgs.map(f => mImg(`${v.dir}/${f}`, v.imgFit === "contain" ? "4/3" : "1", v.imgFit === "contain" ? "90% auto" : "cover")).join("")}
       </div>
     </div>`,
+
+  gallery: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    <div class="mt" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">${v.files.map(f =>
+      `<img src="${esc(v.dir)}/${esc(f)}" alt="" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:contain;background:#000;display:block">`).join("")}</div>`,
 
   image: v => `<img class="media" src="${esc(v.src)}" alt="" loading="lazy" style="height:auto;object-fit:contain;background:#000">`,
 
