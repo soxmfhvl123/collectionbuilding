@@ -286,7 +286,8 @@ const WEEKS = [
         { k: "유리", v: "가우디 기둥처럼 비틀린 유리부터 로프, 리브, 부풀어 오르는 유리까지 12가지 패턴을 렌더링으로 비교했습니다. 유리의 결에 따라 벽에 맺히는 빛의 결이 달라집니다." },
         { k: "1과의 차이", v: "Light Mirror가 판 위에 빛의 원을 그렸다면, Light Mirror 2는 유리를 거친 빛으로 공간 전체에 무늬를 남깁니다." },
       ] },
-    { type: "image", src: "images/1028/lm2-hero.webp" },
+    { type: "gallery", title: "", dir: "images/1028", cols: 2,
+      files: ["lm2-hero.webp", "lm2-bottom.webp"], caps: ["", "밑에서 본 뷰"] },
     { type: "image", src: "images/1028/lm2-lineup.webp" },
     { type: "videos", title: "Light Mirror 2 — 12 Glass", cols: 4, maxWidth: 1500, center: true,
       srcs: ["videos/1028/lm2/Gaudi_Column.mp4",
@@ -324,7 +325,7 @@ const WEEKS = [
    statement { label, en, ko, by }          — 인용/정의 한 문장
    text      { title, rows: [{k, v}], foot, footSize: "h2", kWidth } — 생각 정리
    embed     { url, title, text: [], meta: [[k, v]] } — 웹 작업 임베드
-   gallery   { title, dir, files, cols } — 이미지 그리드 (기본 3열)
+   gallery   { title, dir, files, cols, caps } — 이미지 그리드 (기본 3열)
    table     { title, head: [], widths: [%], rows: [[...]], foot } — 여러 열 표
    brand     { en, ko }                       — Kinda Official 워드마크 + 한 문장
    site      { title, url, note }             — 웹사이트를 장표 안에 크게 (직접 클릭 가능)
@@ -521,10 +522,12 @@ const RENDER = {
     })()}`,
 
   gallery: v => `
-    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.title ? `<div class="h2 type" data-text="${esc(v.title)}"></div>` : ""}
     <div class="abs" style="left:var(--pad);right:120px;top:150px;bottom:var(--pad);display:grid;gap:12px;
          grid-template-columns:repeat(${v.cols || 3},1fr);grid-auto-rows:1fr">
-      ${v.files.map(f => `<div style="background:#000;overflow:hidden;min-height:0"><img src="${esc(v.dir)}/${esc(f)}" alt="" style="width:100%;height:100%;object-fit:contain;display:block"></div>`).join("")}
+      ${v.files.map((f, i) => `<div style="background:#000;overflow:hidden;min-height:0;display:flex;flex-direction:column;justify-content:center">
+        <img src="${esc(v.dir)}/${esc(f)}" alt="" style="width:100%;min-height:0;object-fit:contain;display:block">
+        ${v.caps?.[i] ? `<div class="small dim" style="font-size:22px;margin-top:16px">${esc(v.caps[i])}</div>` : ""}</div>`).join("")}
     </div>`,
 
   image: v => v.width   // width 주면 화면 가운데에 그 너비로 작게
@@ -663,9 +666,10 @@ const RENDER_M = {
     </div>`,
 
   gallery: v => `
-    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.title ? `<div class="h2 type" data-text="${esc(v.title)}"></div>` : ""}
     <div class="mt" style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px">${v.files.map(f =>
-      `<img src="${esc(v.dir)}/${esc(f)}" alt="" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:contain;background:#000;display:block">`).join("")}</div>`,
+      `<img src="${esc(v.dir)}/${esc(f)}" alt="" loading="lazy" style="width:100%;aspect-ratio:1;object-fit:contain;background:#000;display:block">`).join("")}</div>
+    ${(v.caps || []).filter(Boolean).map(c => `<p class="small dim mt">${esc(c)}</p>`).join("")}`,
 
   image: v => `<img class="media" src="${esc(v.src)}" alt="" loading="lazy" style="height:auto;object-fit:contain;background:#000">`,
 
