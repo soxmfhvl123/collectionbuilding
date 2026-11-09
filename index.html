@@ -308,6 +308,9 @@ const WEEKS = [
         { k: "이름의 의미", v: "들숨은 숨을 들이쉬는 것입니다. 사람이 오면 숨을 들이쉬고, 떠나면 천천히 내쉬며 다시 고요해집니다." },
       ] },
     { type: "media", src: "videos/1028/breathing-ceiling.mp4", label: "Breath — 숨 쉬는 펜던트 조명", caption: "사람이 다가오면 숨 쉬듯 물결친다" },
+    { type: "image", src: "images/1028/cast-mold.jpg" },
+    { type: "image", src: "images/1028/cast-vacuum.jpg" },
+    { type: "videos", title: "", srcs: ["videos/1028/cast-light.mp4"], maxWidth: 1500, center: true },
   ] },
   { date: "11.04.26", title: "Prototype", slides: [
     { type: "gallery", title: "Prototype", dir: "images/1104",
@@ -474,7 +477,7 @@ const RENDER = {
     </div>`,
 
   videos: v => `
-    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.title ? `<div class="h2 type" data-text="${esc(v.title)}"></div>` : ""}
     <div style="position:absolute;left:${v.center ? 0 : "var(--pad)"};right:${v.center ? 0 : "120px"};top:50%;transform:translateY(-50%);
                 display:grid;grid-template-columns:repeat(${v.cols || v.srcs.length},1fr);gap:16px;${v.maxWidth ? `max-width:${v.maxWidth}px;` : ""}${v.center ? "margin:0 auto;" : ""}">
       ${v.srcs.map((src, i) => `<div>${linkWrap(v.link, vid(src, `muted loop playsinline preload="auto"`,
@@ -637,7 +640,7 @@ const RENDER_M = {
     </div>`,
 
   videos: v => `
-    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.title ? `<div class="h2 type" data-text="${esc(v.title)}"></div>` : ""}
     <div class="mt ${v.cols ? "" : "stack"}" style="${v.cols ? "display:grid;grid-template-columns:repeat(2,1fr);gap:8px" : ""}">${v.srcs.map((src, i) =>
       linkWrap(v.link, vid(src, `class="media" muted loop playsinline preload="metadata"`, `aspect-ratio:${v.ratio || "16/9"}`))
       + (v.captions?.[i] ? `<div class="kv" style="margin-bottom:16px"><div class="k">${esc(v.captions[i][0])}</div><div class="v">${esc(v.captions[i][1])}</div></div>` : "")).join("")}</div>`,
