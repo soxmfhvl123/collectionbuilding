@@ -325,7 +325,75 @@ const WEEKS = [
       files: ["mold-closed.jpg", "mold-core.jpg"] },
     { type: "image", src: "images/1111/mold-3d.webp" },
   ] },
-  { date: "11.18.26", title: "Resin Casting", slides: [
+  { date: "11.18.26", title: "AI Lecture & Resin Casting", slides: [
+    // ── 특강: AI 시대, 무엇을 배워야 할까 (백만수무강 영상 정리 + 원본 소스) ──
+    { type: "video", id: "76js2AphU5g", title: "특강 — AI 시대, 무엇을 배워야 할까" },
+    { type: "text", title: "답은 2년 동안 세 번 바뀌었습니다", sub: "AI가 아래 칸을 가져갈 때마다, 답은 바로 위 칸으로 올라갔습니다",
+      kWidth: 360, rows: [
+        { k: "1. 코딩",        v: "10년 넘게 다들 코딩을 배우라고 했습니다. 이제 코드는 AI가 짭니다." },
+        { k: "2. AI 쓰는 법",  v: "AI 하나에게 잘 묻는 법. 프롬프트 수업이 가장 중요한 수업으로 꼽혔습니다." },
+        { k: "3. AI 부리는 법", v: "AI 여러 개에게 일을 나눠 맡기고 관리하는 법." },
+        { k: "4. 맨 위 칸",    v: "AI가 대신 정해 주지 못하는 것. 무엇을, 왜 할지." },
+      ] },
+    { type: "source", title: "젠슨 황", sub: "NVIDIA · 세계정부정상회의 (2024.2)", id: "8Pm2xEViNIo", start: 1115,
+      ko: "이제 프로그래밍 언어는 사람의 말입니다. 세상 모두가 프로그래머입니다.",
+      en: "The programming language is human. Everybody in the world is now a programmer." },
+    { type: "source", title: "앤드루 응", sub: "Stanford Online (2026.9)", id: "HTlf3KNNez0", start: 0,
+      ko: "그래도 모두가 코딩을 배워야 합니다. 이미 생산성 격차가 보입니다.",
+      en: "I think that everyone should learn to code." },
+    { type: "source", title: "다리오 아모데이", sub: "Anthropic · People by WTF (2026.2)", id: "EdZWPB1fIJc", start: 75,
+      ko: "코딩이 먼저 사라집니다. 코딩은 AI가 먼저 하게 됩니다.",
+      en: "I think coding is going away first, or coding is being done by the AI models first." },
+    { type: "source", title: "에릭 슈미트", sub: "In Good Company (2026.10)", id: "U5YtR3OG5Uo", start: 2453,
+      ko: "관심 있는 일을 자동화하는 에이전트 시스템을 직접 만들어 보세요.",
+      en: "Try to build an agentic system that automates the things you care about." },
+    { type: "source", title: "안드레이 카파시", sub: "Sequoia Capital (2026.4)", id: "96jN2OCOfLs", start: 1700,
+      ko: "병목은 제가 되어 갑니다. 무엇을 만들려는지, 왜 할 가치가 있는지.",
+      en: "I feel like I'm becoming a bottleneck of just even knowing what are we trying to build, why is it worth doing." },
+    { type: "source", title: "다리오 아모데이", sub: "일의 5%만 사람이 해도", id: "EdZWPB1fIJc", start: 95,
+      ko: "AI가 95%를 하면, 사람의 5%는 20배로 증폭됩니다.",
+      en: "You're only doing 5% of the task, the AI does the other 95%, and so you become 20 times more productive.",
+      by: "Anthropic 내부: AI를 관리하는 일의 비중이 22%로 두 배 넘게 늘었고, 올해 3월 AI가 일한 시간이 직원보다 처음 길어졌습니다." },
+    { type: "text", title: "그럼 사람에게 남는 일", sub: "같은 AI를 받은 사람들의 성과를 가른 세 가지",
+      kWidth: 360, rows: [
+        { k: "1. 정하기",   v: "무엇을 만들지, 그게 누구에게 필요한지 정하는 것" },
+        { k: "2. 고르기",   v: "AI가 준 여러 답 가운데 나에게 맞는 것을 알아보는 것" },
+        { k: "3. 속지 않기", v: "그럴듯한 답을 듣고도 정말 맞는지 한 번 더 따져 보는 것" },
+      ] },
+    { type: "source", title: "샘 올트먼", sub: "남는 일 1 · 정하기 — OpenAI Podcast Ep.1 (2025.6)", id: "DB9mjd-65gw", start: 2328,
+      ko: "회복력, 적응력, 창의성, 그리고 다른 사람이 무엇을 원하는지 알아내는 것.",
+      en: "Skills like resilience, adaptability, creativity, figuring out what other people want.",
+      by: "한국은행 (2026.6): AI로 아낀 시간과 해낸 일은 관계가 없었습니다. 늘어난 건 할 일을 스스로 정하는 자영업자와 전문직뿐." },
+    { type: "source", title: "토비 뤼트케", sub: "남는 일 2 · 고르기 — Shopify · The Knowledge Project (2026.9)", id: "G9P9D9hptq8", start: 1872,
+      ko: "안목과 판단. 늘 중요했지만, 이제 끝까지 중요해집니다.",
+      en: "Taste and judgment are the skills that have always been valuable, but now will get to the limit." },
+    { type: "source", title: "나발 라비칸트", sub: "남는 일 2 · 고르기 — On Artificial Intelligence (2026.2)", id: "sXCKgEl9hBo", start: 1236,
+      ko: "올바른 일을 고르는 사람과 잘못 고르는 사람. 그 차이는 더 크게 벌어집니다.",
+      en: "There are programmers who just pick the right thing to work on, and others who pick the wrong thing." },
+    { type: "source", title: "다리오 아모데이", sub: "남는 일 3 · 속지 않기", id: "EdZWPB1fIJc", start: 200,
+      ko: "무엇이든 만들어 낼 수 있는 시대에는, 비판적 사고가 가장 중요할 수 있습니다.",
+      en: "Having basic critical thinking skills may be the most important thing to success." },
+    { type: "table", title: "같은 AI, 다른 결과", head: ["실험", "대상", "결과"], widths: [24, 26, 50],
+      rows: [
+        ["케냐 자영업자", "640명 · AI 사업 조언 5개월", "잘하던 절반은 +15%, 못하던 절반은 −10%. 차이는 여러 조언 중 무엇을 골랐느냐"],
+        ["보스턴컨설팅그룹", "컨설턴트 758명", "AI가 틀리는 문제: 정답률 84.5% → 60~70%로 하락. AI가 잘하는 문제: 결과물 40% 넘게 향상"],
+        ["한국은행", "AI를 쓰는 직장인", "아낀 시간과 성과는 무관. 할 일을 스스로 정하는 사람만 성과가 늘었음"],
+      ] },   // 출처: Otis 외, Management Science · Dell'Acqua 외, Organization Science · BOK 이슈노트 2026-12
+    { type: "source", title: "제프리 힌턴", sub: "손으로 하는 일 — Vienna Gödel Lecture (2026.10)", id: "TNffIt8eRb0", start: 4620,
+      ko: "만약을 위해, 배관 일도 배워 두세요.",
+      en: "So maybe also learn to do plumbing, just in case.",
+      by: "AI가 글과 코드는 금방 배워도, 손과 몸으로 하는 일은 한참 걸립니다." },
+    { type: "source", title: "유발 하라리", sub: "한 번도 안 바뀐 답 — 21 Lessons (2018.12)", id: "aQ_8n4Dl9vc", start: 50,
+      ko: "평생 배우고, 몇 번이고 자신을 다시 만들어야 합니다.",
+      en: "The only way for humans to stay in the game will be to keep learning throughout their lives, and to reinvent themselves again, and again." },
+    { type: "source", title: "유발 하라리", sub: "마지막 병목 — The next 50 years (2026.7)", id: "_V_ed5fuexA", start: 2690,
+      ko: "무엇이든 가질 수 있게 되면, 병목은 질문이 됩니다. 나는 무엇을 원하는가?",
+      en: "The bottleneck becomes the question: what do I want?" },
+    { type: "statement", label: "정리",
+      en: "What do I want?",
+      ko: "무엇을 할지 정하고, 여러 답 중 고르고, 그럴듯한 답에 속지 않는 것. AI가 대신 답해 주지 않는 질문입니다.",
+      by: "— 백만수무강, 「결국 돈은 이걸 가진 사람이 다 가져갑니다」 (2026.11)" },
+    // ── Resin Casting ──
     { type: "image", src: "images/1118/frosted.jpg" },
     { type: "videos", title: "", srcs: ["videos/1118/casting.mp4"], ratio: "1080/1920", maxWidth: 440, center: true },
     { type: "gallery", title: "", dir: "images/1118", cols: 3,
@@ -411,7 +479,25 @@ function buildWeek(w, idx) {
 const metaTable = rows => `<table class="rows">${rows.map(([k, v]) =>
   `<tr><td class="k" style="width:160px">${esc(k)}</td><td>${esc(v)}</td></tr>`).join("")}</table>`;
 
+// 유튜브 원본 소스: 영상 + 인용 (start = 인용이 나오는 초)
+const ytSrc = v => location.protocol === "file:"
+  ? `<a href="https://www.youtube.com/watch?v=${esc(v.id)}&t=${v.start || 0}s" target="_blank"
+       style="display:block;width:100%;height:100%;background:url('https://img.youtube.com/vi/${esc(v.id)}/hqdefault.jpg') center/cover"></a>`
+  : `<iframe data-src="https://www.youtube.com/embed/${esc(v.id)}?rel=0&modestbranding=1&playsinline=1&start=${v.start || 0}"
+       referrerpolicy="strict-origin-when-cross-origin"
+       style="width:100%;height:100%;border:0;display:block" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+
 const RENDER = {
+  source: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.sub ? `<div class="h2" style="font-size:36px;color:var(--dim);margin-top:10px">${esc(v.sub)}</div>` : ""}
+    <div class="abs" style="left:var(--pad);top:250px;width:1120px;height:630px;background:var(--ph)">${ytSrc(v)}</div>
+    <div class="abs" style="left:1220px;right:120px;top:250px">
+      <div style="font-size:44px;line-height:1.3">${esc(v.ko)}</div>
+      ${v.en ? `<div style="font-size:24px;line-height:1.45;color:var(--dim);margin-top:36px">“${esc(v.en)}”</div>` : ""}
+      ${v.by ? `<div class="small dim" style="margin-top:36px">${esc(v.by)}</div>` : ""}
+    </div>`,
+
   video: v => `
     <div class="h2 type" data-text="${esc(v.title)}"></div>
     <div class="abs" style="left:var(--pad);top:140px;width:1564px;height:880px;background:var(--ph)">
@@ -610,6 +696,14 @@ const mHead = v => `
   ${v.text ? `<p class="body mt">${esc(v.text)}</p>` : ""}`;
 
 const RENDER_M = {
+  source: v => `
+    <div class="h2 type" data-text="${esc(v.title)}"></div>
+    ${v.sub ? `<div class="body dim" style="margin-top:6px">${esc(v.sub)}</div>` : ""}
+    <div class="mt" style="aspect-ratio:16/9">${ytSrc(v)}</div>
+    <div class="h2 mt">${esc(v.ko)}</div>
+    ${v.en ? `<p class="body dim mt">“${esc(v.en)}”</p>` : ""}
+    ${v.by ? `<div class="small dim mt">${esc(v.by)}</div>` : ""}`,
+
   video: v => `
     <div class="h2 type" data-text="${esc(v.title)}"></div>
     <div class="mt">${location.protocol === "file:"
